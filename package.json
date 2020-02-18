@@ -1,0 +1,46 @@
+{
+  "name": "cotlin",
+  "version": "1.0.0",
+  "description": "Cotlin is tools that collect the tweet  links",
+  "main": "index.js",
+  "scripts": {
+    "login": "clasp login",
+    "init": "clasp create . --rootDir ./src",
+    "clone": "clasp clone",
+    "push": "clasp push",
+    "deploy": "clasp deploy",
+    "prepare": "npm run build",
+    "build": "webpack",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Silver-birder/Cotlin.git"
+  },
+  "keywords": [
+    "clasp",
+    "twitter",
+    "typescript",
+    "googleAppsScript"
+  ],
+  "author": "silverbirder <silverbirder@gmail.com> (https://silver-birder.github.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Silver-birder/Cotlin/issues"
+  },
+  "homepage": "https://github.com/Silver-birder/Cotlin#readme",
+  "devDependencies": {
+    "@google/clasp": "^2.3.0",
+    "@types/google-apps-script": "^1.0.10",
+    "@types/jest": "^24.9.1",
+    "es3ify-webpack-plugin": "^0.1.0",
+    "gas-webpack-plugin": "^1.0.2",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.0.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2"
+  }
+}
