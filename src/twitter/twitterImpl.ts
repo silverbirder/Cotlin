@@ -15,10 +15,11 @@ export default class TwitterImpl implements ITwitter {
     constructor() {
         this.CONSUMER_API_KEY = PropertiesService.getScriptProperties().getProperty(this.PROP_CONSUMER_API_KEY_NAME)!;
         this.CONSUMER_API_SECRET_KEY = PropertiesService.getScriptProperties().getProperty(this.PROP_CONSUMER_API_SECRET_KEY_NAME)!;
+        this.ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(this.PROP_ACCESS_TOKEN_NAME)!;
     }
 
-    isSetPropAccessToken(): boolean {
-        return PropertiesService.getScriptProperties().getProperty(this.PROP_ACCESS_TOKEN_NAME) !== null;
+    isSetAccessToken(): boolean {
+        return  this.ACCESS_TOKEN !== null;
     }
 
     auth(): boolean {
@@ -56,8 +57,10 @@ export default class TwitterImpl implements ITwitter {
         if (responseCode !== 200) {
             Logger.log(responseCode);
         }
-        const content: {statuses: Array<any>, search_metadata: any} = JSON.parse(response.getContentText());
-        return content.statuses;
+        const content: { statuses: Array<{ text: string }>, search_metadata: any } = JSON.parse(response.getContentText());
+        return content.statuses.map((status: { text: string }) => {
+            return status.text;
+        });
     }
 
     _format(d: Date): string {

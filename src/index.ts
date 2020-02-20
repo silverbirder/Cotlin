@@ -10,12 +10,12 @@ export function greet() {
     console.log('hello world');
 }
 
-const doGet: any = new ControllerImpl().doGet;
+const Get: any = ControllerImpl.Get;
 
 global.Twitter = TwitterImpl;
-global.doGet = doGet;
+global.doGet = Get;
 
 export {
     TwitterImpl as Twitter,
-    doGet as doGet,
+    Get as doGet,
 }
