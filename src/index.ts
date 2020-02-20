@@ -1,9 +1,21 @@
+import TwitterImpl from "./twitter/twitterImpl";
+import ControllerImpl from "./controller/controllerImpl";
+
 declare const global: {
-    Sample: any
+    Twitter: any
+    doGet(e: any): any
 };
 
 export function greet() {
     console.log('hello world');
 }
 
-global.Sample = greet;
+const doGet: any = new ControllerImpl().doGet;
+
+global.Twitter = TwitterImpl;
+global.doGet = doGet;
+
+export {
+    TwitterImpl as Twitter,
+    doGet as doGet,
+}
