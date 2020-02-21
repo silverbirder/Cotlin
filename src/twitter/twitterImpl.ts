@@ -9,17 +9,15 @@ export default class TwitterImpl implements ITwitter {
     AUTH_URL: string = 'https://api.twitter.com/oauth2/token';
     SEARCH_TWEETS_URL: string = 'https://api.twitter.com/1.1/search/tweets.json';
     PROP_ACCESS_TOKEN_NAME: string = 'ACCESS_TOKEN';
-    PROP_CONSUMER_API_KEY_NAME: string = 'CONSUMER_API_KEY';
-    PROP_CONSUMER_API_SECRET_KEY_NAME: string = 'CONSUMER_API_SECRET_KEY';
 
-    constructor() {
-        this.CONSUMER_API_KEY = PropertiesService.getScriptProperties().getProperty(this.PROP_CONSUMER_API_KEY_NAME)!;
-        this.CONSUMER_API_SECRET_KEY = PropertiesService.getScriptProperties().getProperty(this.PROP_CONSUMER_API_SECRET_KEY_NAME)!;
+    constructor(consumerApiKey: string, consumerApiSecretKey: string) {
         this.ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(this.PROP_ACCESS_TOKEN_NAME)!;
+        this.CONSUMER_API_KEY = consumerApiKey;
+        this.CONSUMER_API_SECRET_KEY = consumerApiSecretKey;
     }
 
     isSetAccessToken(): boolean {
-        return  this.ACCESS_TOKEN !== null;
+        return this.ACCESS_TOKEN !== null;
     }
 
     auth(): boolean {
@@ -52,15 +50,27 @@ export default class TwitterImpl implements ITwitter {
             }
         };
         const buildQuery: string = encodeURIComponent(`(#${hashTag}) until:${this._format(end)} since:${this._format(start)}`);
-        const response: HTTPResponse = UrlFetchApp.fetch(`${this.SEARCH_TWEETS_URL}?q=${buildQuery}`, options);
+        let response: HTTPResponse = UrlFetchApp.fetch(`${this.SEARCH_TWEETS_URL}?q=${buildQuery}`, options);
         const responseCode: number = response.getResponseCode();
         if (responseCode !== 200) {
             Logger.log(responseCode);
         }
-        const content: { statuses: Array<{ text: string }>, search_metadata: any } = JSON.parse(response.getContentText());
-        return content.statuses.map((status: { text: string }) => {
-            return status.text;
-        });
+        const textStack: Array<string> = [];
+        while (true) {
+            const content: { statuses: Array<{ text: string }>, search_metadata: { next_results: string } } = JSON.parse(response.getContentText());
+            content.statuses.forEach((status: { text: string }) => {
+                return textStack.push(status.text);
+            });
+            if (content.search_metadata.next_results) {
+                response = UrlFetchApp.fetch(content.search_metadata.next_results, options);
+                const responseCode: number = response.getResponseCode();
+                if (responseCode !== 200) {
+                    Logger.log(responseCode);
+                }
+            } else {
+                break;
+            }
+        }
     }
 
     _format(d: Date): string {
