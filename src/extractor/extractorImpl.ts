@@ -15,6 +15,7 @@ export default class ExtractorImpl implements IExtractor {
                 result.push(matchedText[1]);
             }
         });
-        return result;
+        const uniq: Array<string> = Array.from(new Set(result));
+        return uniq;
     }
 }

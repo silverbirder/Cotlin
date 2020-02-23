@@ -21,7 +21,8 @@ export default class CrawlerImpl implements ICrawler {
                 break;
             }
         }
-        return locationList;
+        const uniqLocationList: Array<string> = Array.from(new Set(locationList));
+        return uniqLocationList;
     }
 
     _buildRequestList(urlList: Array<string>): Array<URLFetchRequest> {
@@ -30,6 +31,7 @@ export default class CrawlerImpl implements ICrawler {
                 url: url,
                 method: 'get',
                 followRedirects: false,
+                muteHttpExceptions: true,
             }
         });
     }

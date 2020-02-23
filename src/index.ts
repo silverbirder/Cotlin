@@ -1,21 +1,27 @@
 import TwitterImpl from "./twitter/twitterImpl";
 import ControllerImpl from "./controller/controllerImpl";
+import CrawlerImpl from "./crawler/crawlerImpl";
+import ExtractorImpl from "./extractor/extractorImpl";
 
 declare const global: {
     Twitter: any
-    doGet(e: any): any
+    Controller: any
+    Crawler: any
+    Extractor: any
 };
 
 export function greet() {
     console.log('hello world');
 }
 
-const Get: any = ControllerImpl.Get;
-
 global.Twitter = TwitterImpl;
-global.doGet = Get;
+global.Controller = ControllerImpl;
+global.Crawler = CrawlerImpl;
+global.Extractor = ExtractorImpl;
 
 export {
     TwitterImpl as Twitter,
-    Get as doGet,
+    ControllerImpl as Controller,
+    CrawlerImpl as Crawler,
+    ExtractorImpl as Extractor
 }

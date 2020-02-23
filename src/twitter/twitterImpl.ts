@@ -49,8 +49,8 @@ export default class TwitterImpl implements ITwitter {
                 Authorization: `Bearer ${this.ACCESS_TOKEN}`
             }
         };
-        const buildQuery: string = encodeURIComponent(`(#${hashTag}) until:${this._format(end)} since:${this._format(start)}`);
-        let response: HTTPResponse = UrlFetchApp.fetch(`${this.SEARCH_TWEETS_URL}?q=${buildQuery}`, options);
+        const buildQuery: string = encodeURIComponent(`(#${hashTag}) until:${this._format(end)} since:${this._format(start)} filter:links -filter:replies`);
+        let response: HTTPResponse = UrlFetchApp.fetch(`${this.SEARCH_TWEETS_URL}?count=100&q=${buildQuery}`, options);
         const responseCode: number = response.getResponseCode();
         if (responseCode !== 200) {
             Logger.log(responseCode);
@@ -62,7 +62,7 @@ export default class TwitterImpl implements ITwitter {
                 return textStack.push(status.text);
             });
             if (content.search_metadata.next_results) {
-                response = UrlFetchApp.fetch(content.search_metadata.next_results, options);
+                response = UrlFetchApp.fetch(`${this.SEARCH_TWEETS_URL}${content.search_metadata.next_results}`, options);
                 const responseCode: number = response.getResponseCode();
                 if (responseCode !== 200) {
                     Logger.log(responseCode);
@@ -71,6 +71,7 @@ export default class TwitterImpl implements ITwitter {
                 break;
             }
         }
+        return textStack;
     }
 
     _format(d: Date): string {

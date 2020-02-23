@@ -6,7 +6,7 @@ import CrawlerImpl from "../crawler/crawlerImpl";
 
 export default class ControllerImpl implements IController {
 
-    static Run(e: AppsScriptHttpRequestEvent): any {
+    run(e: AppsScriptHttpRequestEvent): any {
         const parameter: { h?: string, s?: string, e?: string } = e.parameter;
         let hashTag: string = '';
         let startDate: Date = new Date();
@@ -15,16 +15,15 @@ export default class ControllerImpl implements IController {
             hashTag = parameter.h;
         }
         if (parameter.s !== undefined) {
-            const startDateAry: Array<string> = parameter.s.split('-|/');
+            const startDateAry: Array<string> = parameter.s.split('-');
             if (startDateAry.length === 3) {
                 startDate = new Date(parseInt(startDateAry[0]), parseInt(startDateAry[1]) - 1, parseInt(startDateAry[2]));
             }
         }
         if (parameter.e !== undefined) {
-            const endDateAry: Array<string> = parameter.e.split('-|/');
+            const endDateAry: Array<string> = parameter.e.split('-');
             if (endDateAry.length === 3) {
-                startDate = new Date(parseInt(endDateAry[0]), parseInt(endDateAry[1]) - 1, parseInt(endDateAry[2]));
-                endDate = new Date(parameter.e);
+                endDate = new Date(parseInt(endDateAry[0]), parseInt(endDateAry[1]) - 1, parseInt(endDateAry[2]));
             }
 
         }
@@ -38,10 +37,11 @@ export default class ControllerImpl implements IController {
             twitter.auth();
         }
         const result = twitter.search(hashTag, startDate, endDate);
-        const extractor: ExtractorImpl = new ExtractorImpl(new RegExp('https?://[\w!?/\+\-_~=;\.,*&@#$%\(\)\'\[\]]+'));
+        const extractor: ExtractorImpl = new ExtractorImpl(/(https:\/\/t\.co\/.{10})/);
         const urlList: Array<string> = extractor.extract(result);
         const crawler: CrawlerImpl = new CrawlerImpl();
         const locationList: Array<string> = crawler.craw(urlList);
+
         Logger.log(locationList);
         ContentService.createTextOutput();
         const output = ContentService.createTextOutput();
