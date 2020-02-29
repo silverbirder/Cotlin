@@ -1,31 +1,37 @@
 import IController from "./iController";
 import TwitterImpl from "../twitter/twitterImpl";
 import AppsScriptHttpRequestEvent = GoogleAppsScript.Events.AppsScriptHttpRequestEvent;
-import ExtractorImpl from "../extractor/extractorImpl";
-import CrawlerImpl from "../crawler/crawlerImpl";
 
 export default class ControllerImpl implements IController {
 
     run(e: AppsScriptHttpRequestEvent): any {
-        const parameter: { h?: string, s?: string, e?: string } = e.parameter;
-        let hashTag: string = '';
-        let startDate: Date = new Date();
-        let endDate: Date = new Date();
-        if (parameter.h !== undefined) {
-            hashTag = parameter.h;
+        const parameter: { q?: string, s?: string, u?: string } = e.parameter;
+        let keyword: string = '';
+        let since: Date = new Date();
+        since.setDate(since.getDate() - 1);
+        since.setHours(0);
+        since.setMinutes(0);
+        since.setSeconds(0);
+        let now: Date = new Date();
+        now.setHours(0);
+        now.setMinutes(0);
+        now.setSeconds(0);
+        let until: Date = new Date(now.getTime());
+
+        if (parameter.q !== undefined) {
+            keyword = parameter.q;
         }
         if (parameter.s !== undefined) {
-            const startDateAry: Array<string> = parameter.s.split('-');
-            if (startDateAry.length === 3) {
-                startDate = new Date(parseInt(startDateAry[0]), parseInt(startDateAry[1]) - 1, parseInt(startDateAry[2]));
+            const sinceAry: Array<string> = parameter.s.split('-');
+            if (sinceAry.length === 3) {
+                since = new Date(parseInt(sinceAry[0]), parseInt(sinceAry[1]) - 1, parseInt(sinceAry[2]), 0, 0, 0);
             }
         }
-        if (parameter.e !== undefined) {
-            const endDateAry: Array<string> = parameter.e.split('-');
-            if (endDateAry.length === 3) {
-                endDate = new Date(parseInt(endDateAry[0]), parseInt(endDateAry[1]) - 1, parseInt(endDateAry[2]));
+        if (parameter.u !== undefined) {
+            const untilAry: Array<string> = parameter.u.split('-');
+            if (untilAry.length === 3) {
+                until = new Date(parseInt(untilAry[0]), parseInt(untilAry[1]) - 1, parseInt(untilAry[2]), 0, 0, 0);
             }
-
         }
         const consumerApiKey: string = PropertiesService.getScriptProperties().getProperty('CONSUMER_API_KEY')!;
         const consumerApiSecretKey: string = PropertiesService.getScriptProperties().getProperty('CONSUMER_API_SECRET_KEY')!;
@@ -36,13 +42,14 @@ export default class ControllerImpl implements IController {
         if (!twitter.isSetAccessToken()) {
             twitter.auth();
         }
-        const result = twitter.search(hashTag, startDate, endDate);
-        const extractor: ExtractorImpl = new ExtractorImpl(/(https:\/\/t\.co\/.{10})/);
-        const urlList: Array<string> = extractor.extract(result);
-        const crawler: CrawlerImpl = new CrawlerImpl();
-        const locationList: Array<string> = crawler.craw(urlList);
-
-        Logger.log(locationList);
+        const msDiff: number = now.getTime() - since.getTime();
+        const daysDiff: number = Math.floor(msDiff / (1000 * 60 * 60 * 24));
+        if (daysDiff > 6) {
+            const result2 = twitter.premiumSearch(keyword, since, until);
+            Logger.log(result2);
+            return;
+        }
+        const result = twitter.search(keyword, since, until);
         ContentService.createTextOutput();
         const output = ContentService.createTextOutput();
         output.setMimeType(ContentService.MimeType.JSON);
