@@ -117,7 +117,7 @@ export default class TwitterImpl implements ITwitter {
                 });
             });
             if (content.search_metadata.next_results) {
-1                response = UrlFetchApp.fetch(`${this.SEARCH_STANDARD_URL}${content.search_metadata.next_results}`, options);
+               response = UrlFetchApp.fetch(`${this.SEARCH_STANDARD_URL}${content.search_metadata.next_results}`, options);
                 const responseCode: number = response.getResponseCode();
                 if (responseCode !== 200) {
                     Logger.log(responseCode);
