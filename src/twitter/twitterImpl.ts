@@ -48,7 +48,7 @@ export default class TwitterImpl implements ITwitter {
         return true;
     }
 
-    premiumSearch(keyword: string, since: Date, until: Date): any {
+    premiumSearch(keyword: string, since: Date, until: Date, daysDiff: number): any {
         // https://developer.twitter.com/en/docs/tweets/rules-and-filtering/overview/operators-by-product
         const commonQuery: string = 'lang:ja has:links';
         const utcSince: Date = new Date(since.getUTCFullYear(), since.getUTCMonth(), since.getUTCDate(), since.getUTCHours(), since.getUTCMinutes(), since.getUTCSeconds());
@@ -66,7 +66,8 @@ export default class TwitterImpl implements ITwitter {
                 Authorization: `Bearer ${this.ACCESS_TOKEN}`
             }
         };
-        let response: HTTPResponse = UrlFetchApp.fetch(this.SEARCH_30_URL, options);
+        const url: string =  daysDiff <= 30 ? this.SEARCH_30_URL : this.SEARCH_ARCH_URL;
+        let response: HTTPResponse = UrlFetchApp.fetch(url, options);
         const responseCode: number = response.getResponseCode();
         if (responseCode !== 200) {
             Logger.log(responseCode);
@@ -82,7 +83,7 @@ export default class TwitterImpl implements ITwitter {
             if (content.next) {
                 payload.next = content.next;
                 options.payload = JSON.stringify(payload);
-                response = UrlFetchApp.fetch(this.SEARCH_30_URL, options);
+                response = UrlFetchApp.fetch(url, options);
                 const responseCode: number = response.getResponseCode();
                 if (responseCode !== 200) {
                     Logger.log(responseCode);

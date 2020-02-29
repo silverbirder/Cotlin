@@ -43,9 +43,10 @@ export default class ControllerImpl implements IController {
             twitter.auth();
         }
         const msDiff: number = now.getTime() - since.getTime();
-        const daysDiff: number = Math.floor(msDiff / (1000 * 60 * 60 * 24));
-        if (daysDiff > 6) {
-            const result2 = twitter.premiumSearch(keyword, since, until);
+        const daysDiff: number = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
+        // https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets
+        if (daysDiff > 7) {
+            const result2 = twitter.premiumSearch(keyword, since, until, daysDiff);
             Logger.log(result2);
             return;
         }
