@@ -1,6 +1,7 @@
 import IController from "./iController";
 import TwitterImpl from "../twitter/twitterImpl";
 import AppsScriptHttpRequestEvent = GoogleAppsScript.Events.AppsScriptHttpRequestEvent;
+import ExtractorImpl from "../extractor/extractorImpl";
 
 export default class ControllerImpl implements IController {
 
@@ -44,17 +45,16 @@ export default class ControllerImpl implements IController {
         }
         const msDiff: number = now.getTime() - since.getTime();
         const daysDiff: number = Math.floor(msDiff / (1000 * 60 * 60 * 24)) + 1;
+        let result = [];
         // https://developer.twitter.com/en/docs/tweets/search/api-reference/get-search-tweets
         if (daysDiff > 7) {
-            const result2 = twitter.premiumSearch(keyword, since, until, daysDiff);
-            Logger.log(result2);
-            return;
+            result = twitter.premiumSearch(keyword, since, until, daysDiff);
+        } else {
+            result = twitter.search(keyword, since, until);
         }
-        const result = twitter.search(keyword, since, until);
-        ContentService.createTextOutput();
-        const output = ContentService.createTextOutput();
-        output.setMimeType(ContentService.MimeType.JSON);
-        output.setContent(result);
-        return output;
+
+        const extract: ExtractorImpl = new ExtractorImpl(new RegExp('docs.google.com/presentation|slideshare|speakerdeck'));
+        const urlList = extract.extract(result);
+        return urlList;
     }
 }

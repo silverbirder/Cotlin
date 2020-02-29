@@ -102,7 +102,7 @@ export default class TwitterImpl implements ITwitter {
                 Authorization: `Bearer ${this.ACCESS_TOKEN}`
             }
         };
-        const commonQuery: string = 'url:"https://speakerdeck.com" OR url:"https://docs.google.com/presentation" OR url:"https://www.slideshare.net" lang:ja filter:links -filter:replies -filter:retweets';
+        const commonQuery: string = 'url:speakerdeck OR url:docs.google.com OR url:slideshare lang:ja filter:links -filter:replies -filter:retweets';
         const buildQuery: string = encodeURIComponent(`${keyword} until:${this._formatHyphen(until)} since:${this._formatHyphen(since)} ${commonQuery}`);
         let response: HTTPResponse = UrlFetchApp.fetch(`${this.SEARCH_STANDARD_URL}?count=100&q=${buildQuery}`, options);
         const responseCode: number = response.getResponseCode();

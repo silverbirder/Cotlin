@@ -12,7 +12,7 @@ export default class ExtractorImpl implements IExtractor {
         textList.forEach((text: string) => {
             const matchedText: RegExpMatchArray | null = text.match(this.rule);
             if (matchedText !== null) {
-                result.push(matchedText[1]);
+                result.push(text);
             }
         });
         const uniq: Array<string> = Array.from(new Set(result));
