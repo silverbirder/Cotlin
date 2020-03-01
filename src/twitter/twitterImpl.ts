@@ -72,12 +72,12 @@ export default class TwitterImpl implements ITwitter {
         if (responseCode !== 200) {
             Logger.log(responseCode);
         }
-        const urlStack: Array<string> = [];
+        const urlStack: Array<{id: string, url: string}> = [];
         while (true) {
             const content: IPremiumSearchResponse = JSON.parse(response.getContentText());
             content.results.forEach((status: IStatus) => {
                 status.entities.urls.forEach((url: { expanded_url: string }) => {
-                    urlStack.push(url.expanded_url);
+                    urlStack.push({id: status.id_str, url: url.expanded_url});
                 });
             });
             if (content.next) {
@@ -109,12 +109,12 @@ export default class TwitterImpl implements ITwitter {
         if (responseCode !== 200) {
             Logger.log(responseCode);
         }
-        const urlStack: Array<string> = [];
+        const urlStack: Array<{id: string, url: string}> = [];
         while (true) {
             const content: ISearchResponse = JSON.parse(response.getContentText());
             content.statuses.forEach((status: IStatus) => {
                 status.entities.urls.forEach((url: { expanded_url: string }) => {
-                    urlStack.push(url.expanded_url);
+                    urlStack.push({id: status.id_str, url: url.expanded_url});
                 });
             });
             if (content.search_metadata.next_results) {
@@ -156,6 +156,7 @@ export interface ISearchResponse {
 }
 
 export interface IStatus {
+    id_str: string,
     entities: {
         urls: Array<{
             expanded_url: string

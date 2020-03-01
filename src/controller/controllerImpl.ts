@@ -53,8 +53,9 @@ export default class ControllerImpl implements IController {
             result = twitter.search(keyword, since, until);
         }
 
-        const extract: ExtractorImpl = new ExtractorImpl(new RegExp('docs.google.com/presentation|slideshare|speakerdeck'));
+        const extract: ExtractorImpl = new ExtractorImpl(new RegExp('^(https://www.slideshare.net|https://speakerdeck.com|https://docs.google.com/presentation)'));
         const urlList = extract.extract(result);
-        return urlList;
+        const comList = extract.compress(urlList);
+        return comList;
     }
 }

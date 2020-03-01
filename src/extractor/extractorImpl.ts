@@ -7,15 +7,31 @@ export default class ExtractorImpl implements IExtractor {
         this.rule = rule;
     }
 
-    extract(textList: Array<string>): Array<any> {
+    extract(textList: Array<{id: number, url: string}>): Array<any> {
         const result: Array<any> = [];
-        textList.forEach((text: string) => {
-            const matchedText: RegExpMatchArray | null = text.match(this.rule);
+        textList.forEach((text: {id: number, url: string}) => {
+            const matchedText: RegExpMatchArray | null = text.url.match(this.rule);
             if (matchedText !== null) {
                 result.push(text);
             }
         });
-        const uniq: Array<string> = Array.from(new Set(result));
-        return uniq;
+        return result;
+    }
+    compress(textList: Array<{id: number, url: string}>): any {
+        const result: any = {};
+        textList.forEach((text: {id: number, url: string}) => {
+            if (!(text.url in result)) {
+                result[text.url] = [];
+            }
+            result[text.url].push(text.id);
+        });
+        const reverse: Array<any> = [];
+        Object.keys(result).forEach(function (key) {
+            reverse.push({
+                url: key,
+                ids: result[key]
+            });
+        });
+        return reverse;
     }
 }
