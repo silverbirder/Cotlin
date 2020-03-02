@@ -1,11 +1,11 @@
 import TwitterImpl from "./twitter/twitterImpl";
 import ControllerImpl from "./controller/controllerImpl";
-import ExtractorImpl from "./extractor/extractorImpl";
+import ArchiveImpl from "./archive/archiveImpl";
 
 declare const global: {
     Twitter: any
     Controller: any
-    Extractor: any
+    Archive: any
 };
 
 export function greet() {
@@ -14,10 +14,10 @@ export function greet() {
 
 global.Twitter = TwitterImpl;
 global.Controller = ControllerImpl;
-global.Extractor = ExtractorImpl;
+global.Archive = ArchiveImpl;
 
 export {
     TwitterImpl as Twitter,
     ControllerImpl as Controller,
-    ExtractorImpl as Extractor
+    ArchiveImpl as Archive
 }
