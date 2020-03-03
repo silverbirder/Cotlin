@@ -8,10 +8,6 @@ declare const global: {
     Archive: any
 };
 
-export function greet() {
-    console.log('hello world');
-}
-
 global.Twitter = TwitterImpl;
 global.Controller = ControllerImpl;
 global.Archive = ArchiveImpl;
