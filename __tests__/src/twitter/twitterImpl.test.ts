@@ -1,5 +1,6 @@
-import ITwitter from "../../../src/twitter/iTwitter";
+import ITwitter, {SEARCH_TYPE} from "../../../src/twitter/iTwitter";
 import TwitterImpl from "../../../src/twitter/twitterImpl";
+import { advanceTo, clear } from 'jest-date-mock';
 
 beforeAll(() => {
     // @ts-ignore
@@ -26,5 +27,33 @@ describe('Class: TwitterImpl', () => {
                 expect(domains).toBe(twitter.domains);
             });
         });
-    })
+    });
+    describe('Method: whichType', () => {
+        describe('Data: Parameterized', () => {
+            test.each([
+                // now, since, expected
+                // standard search is 7 days.
+                [new Date(2020, 2, 1), new Date(2020,2,1), SEARCH_TYPE.STANDARD],
+                [new Date(2020, 2, 1), new Date(2020,1,24), SEARCH_TYPE.STANDARD],
+                // premium 30 day search is 30 days.
+                [new Date(2020, 2, 1), new Date(2020,1,23), SEARCH_TYPE.PREMIUM_30DAY],
+                [new Date(2020, 2, 1), new Date(2020,1,1), SEARCH_TYPE.PREMIUM_30DAY],
+                // premium full archive search is more.
+                [new Date(2020, 2, 1), new Date(2019,12,31), SEARCH_TYPE.PREMIUM_FULL_ARCHIVE],
+            ])(`Assert: between  now(%o) and since(%o) -> expected (%s)`, (now, since, expected) => {
+                // Arrange
+                const twitter: ITwitter = new TwitterImpl('', '', []);
+                advanceTo(now);
+                twitter.since = since;
+                const expectedWhichType: SEARCH_TYPE = expected;
+
+                // Act
+                const actualWhichType: SEARCH_TYPE = twitter.whichType();
+
+                // Assert
+                expect(expectedWhichType).toBe(actualWhichType);
+                clear();
+            });
+        });
+    });
 });
