@@ -69,11 +69,16 @@ export default class TwitterImpl implements ITwitter {
                 grant_type: 'client_credentials'
             }
         };
-        const response: HTTPResponse = UrlFetchApp.fetch(this.AUTH_URL, options);
-        const content: { access_token: string } = JSON.parse(response.getContentText());
-        PropertiesService.getScriptProperties().setProperty(this.PROP_ACCESS_TOKEN_NAME, content.access_token);
-        this.ACCESS_TOKEN = content.access_token;
-        return true;
+        try {
+            const response: HTTPResponse = UrlFetchApp.fetch(this.AUTH_URL, options);
+            const content: { access_token: string } = JSON.parse(response.getContentText());
+            PropertiesService.getScriptProperties().setProperty(this.PROP_ACCESS_TOKEN_NAME, content.access_token);
+            this.ACCESS_TOKEN = content.access_token;
+            return true;
+        } catch (e) {
+            Logger.log(e);
+            return false;
+        }
     }
 
     premium30DaySearch(): Array<IResponseStack> {
