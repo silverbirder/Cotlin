@@ -56,4 +56,40 @@ describe('Class: TwitterImpl', () => {
             });
         });
     });
+    describe('Method: isSetAccessToken', () => {
+        describe('Data: not set access token', () => {
+            test('Assert: false', () => {
+                // Arrange
+                const twitter: ITwitter = new TwitterImpl('', '', []);
+                const expectedSetAccessToken: boolean = false;
+
+                // Act
+                const actualSetAccessToken: boolean = twitter.isSetAccessToken();
+
+                // Assert
+                expect(expectedSetAccessToken).toBe(actualSetAccessToken);
+            });
+        });
+        describe('Data: set access token', () => {
+            test('Assert: false', () => {
+                // Arrange
+                // @ts-ignore
+                PropertiesService.getScriptProperties! = jest.fn(() => {
+                    return {
+                        getProperty: jest.fn(() => {
+                            return 'ACCESS_TOKEN'
+                        })
+                    }
+                });
+                const twitter: ITwitter = new TwitterImpl('', '', []);
+                const expectedSetAccessToken: boolean = true;
+
+                // Act
+                const actualSetAccessToken: boolean = twitter.isSetAccessToken();
+
+                // Assert
+                expect(expectedSetAccessToken).toBe(actualSetAccessToken);
+            });
+        });
+    });
 });

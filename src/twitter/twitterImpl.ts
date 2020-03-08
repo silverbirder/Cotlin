@@ -56,7 +56,7 @@ export default class TwitterImpl implements ITwitter {
     }
 
     isSetAccessToken(): boolean {
-        return this.ACCESS_TOKEN !== null;
+        return this.ACCESS_TOKEN !== '';
     }
 
     auth(): boolean {
