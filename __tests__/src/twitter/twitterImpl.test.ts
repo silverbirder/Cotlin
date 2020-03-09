@@ -1,8 +1,10 @@
-import ITwitter, {SEARCH_TYPE} from "../../../src/twitter/iTwitter";
+import ITwitter, {IResponseStack, SEARCH_TYPE} from "../../../src/twitter/iTwitter";
 import TwitterImpl from "../../../src/twitter/twitterImpl";
 import {advanceTo, clear} from 'jest-date-mock';
+import * as path from "path";
+import * as fs from "fs";
 
-beforeAll(() => {
+beforeEach(() => {
     // @ts-ignore
     PropertiesService.getScriptProperties! = jest.fn(() => {
         return {
@@ -15,18 +17,24 @@ beforeAll(() => {
         }
     });
     Utilities.base64Encode = jest.fn(() => {
-       return ''
+        return ''
     });
     // @ts-ignore
-    UrlFetchApp.fetch = jest.fn(()=> {
+    UrlFetchApp.fetch = jest.fn().mockImplementationOnce(()=> {
        return {
            getContentText: jest.fn(() => {
-              return "{}"
+              return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/next_results_response.json'), 'utf-8');
            })
        };
+    }).mockImplementationOnce(() => {
+        return {
+            getContentText: jest.fn(() => {
+                return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/not_next_results_response.json'), 'utf-8');
+            })
+        };
     });
     // @ts-ignore
-    Logger.log = jest.fn(()=> {
+    Logger.log = jest.fn(() => {
         return ''
     });
 });
@@ -128,7 +136,7 @@ describe('Class: TwitterImpl', () => {
             test('Assert: auth = false', () => {
                 // Arrange
                 // @ts-ignore
-                UrlFetchApp.fetch = jest.fn(()=> {
+                UrlFetchApp.fetch = jest.fn(() => {
                     return {
                         getContentText: jest.fn(() => {
                             throw Error();
@@ -143,6 +151,22 @@ describe('Class: TwitterImpl', () => {
 
                 // Assert
                 expect(expectedAuthResult).toBe(actualAuthResult);
+            });
+        });
+    });
+    describe('Method: standardSearch', () => {
+        describe('Data: 2 data', () => {
+            test('Assert: response data length = 2', () => {
+                // Arrange
+                const twitter: ITwitter = new TwitterImpl('', '', []);
+                const expectedResults: number = 2;
+
+                // Act
+                const result: Array<IResponseStack> = twitter.standardSearch();
+                const actualResults: number = result.length;
+
+                // Assert
+                expect(expectedResults).toBe(actualResults);
             });
         });
     });

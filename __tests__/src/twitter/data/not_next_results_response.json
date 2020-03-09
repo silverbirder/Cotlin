@@ -1,0 +1,17 @@
+{
+  "search_metadata": {
+    "next_results": ""
+  },
+  "statuses": [
+    {
+      "id_str": "2",
+      "entities": {
+        "urls": [
+          {
+            "expanded_url": "https://sample2.com"
+          }
+        ]
+      }
+    }
+  ]
+}

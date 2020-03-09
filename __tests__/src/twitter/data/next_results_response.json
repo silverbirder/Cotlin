@@ -1,0 +1,17 @@
+{
+  "search_metadata": {
+    "next_results": "?q=hoge"
+  },
+  "statuses": [
+    {
+      "id_str": "1",
+      "entities": {
+        "urls": [
+          {
+            "expanded_url": "https://sample1.com"
+          }
+        ]
+      }
+    }
+  ]
+}
