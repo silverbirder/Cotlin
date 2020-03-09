@@ -180,10 +180,9 @@ describe('Class: TwitterImpl', () => {
             });
         });
     });
-    describe('Method: premium30DaySearch', () => {
+    describe('Method: premiumSearch', () => {
         describe('Data: 2 data', () => {
-            test('Assert: response data length = 2', () => {
-                // Arrange
+            const setUpPremiumSearch = () => {
                 // @ts-ignore
                 UrlFetchApp.fetch = jest.fn().mockImplementationOnce(() => {
                     return {
@@ -198,17 +197,40 @@ describe('Class: TwitterImpl', () => {
                         })
                     };
                 });
-                const twitter: ITwitter = new TwitterImpl('', '', []);
-                const expectedResults: number = 2;
+            };
+            describe('Method: premium30DaySearch', () => {
+                test('Assert: response data length = 2', () => {
+                    // Arrange
+                    setUpPremiumSearch();
+                    const twitter: ITwitter = new TwitterImpl('', '', []);
+                    const expectedResults: number = 2;
 
-                // Act
-                const result: Array<IResponseStack> = twitter.premium30DaySearch();
-                const actualResults: number = result.length;
+                    // Act
+                    const result: Array<IResponseStack> = twitter.premium30DaySearch();
+                    const actualResults: number = result.length;
 
-                // Assert
-                expect(expectedResults).toBe(actualResults);
-                // @ts-ignore
-                expect(UrlFetchApp.fetch.mock.calls[0][0]).toBe(twitter.SEARCH_30_URL);
+                    // Assert
+                    expect(expectedResults).toBe(actualResults);
+                    // @ts-ignore
+                    expect(UrlFetchApp.fetch.mock.calls[0][0]).toBe(twitter.SEARCH_30_URL);
+                });
+            });
+            describe('Method: premiumFullArchiveSearch', () => {
+                test('Assert: response data length = 2', () => {
+                    // Arrange
+                    setUpPremiumSearch();
+                    const twitter: ITwitter = new TwitterImpl('', '', []);
+                    const expectedResults: number = 2;
+
+                    // Act
+                    const result: Array<IResponseStack> = twitter.premiumFullArchiveSearch();
+                    const actualResults: number = result.length;
+
+                    // Assert
+                    expect(expectedResults).toBe(actualResults);
+                    // @ts-ignore
+                    expect(UrlFetchApp.fetch.mock.calls[0][0]).toBe(twitter.SEARCH_ARCH_URL);
+                });
             });
         });
     });
