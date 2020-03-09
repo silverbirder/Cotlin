@@ -3,6 +3,9 @@ export default interface ITwitter {
     since: Date;
     until: Date;
     domains: Array<string>;
+    SEARCH_STANDARD_URL: string;
+    SEARCH_30_URL: string;
+    SEARCH_ARCH_URL: string;
 
     isSetAccessToken(): boolean;
 

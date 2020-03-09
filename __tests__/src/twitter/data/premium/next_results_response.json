@@ -1,0 +1,15 @@
+{
+  "next": "https://sample.com/?q=hoge",
+  "results": [
+    {
+      "id_str": "1",
+      "entities": {
+        "urls": [
+          {
+            "expanded_url": "https://sample1.com"
+          }
+        ]
+      }
+    }
+  ]
+}

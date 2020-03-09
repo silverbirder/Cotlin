@@ -5,6 +5,9 @@ export default class TwitterMock implements ITwitter {
     keyword: string = '';
     since: Date = new Date();
     until: Date = new Date();
+    SEARCH_30_URL: string = '';
+    SEARCH_ARCH_URL: string = '';
+    SEARCH_STANDARD_URL: string = '';
 
     auth(): boolean {
         return false;
@@ -33,5 +36,4 @@ export default class TwitterMock implements ITwitter {
     whichType(): SEARCH_TYPE {
         return SEARCH_TYPE.STANDARD;
     }
-
 }

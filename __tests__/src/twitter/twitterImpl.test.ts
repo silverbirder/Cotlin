@@ -20,16 +20,10 @@ beforeEach(() => {
         return ''
     });
     // @ts-ignore
-    UrlFetchApp.fetch = jest.fn().mockImplementationOnce(()=> {
-       return {
-           getContentText: jest.fn(() => {
-              return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/next_results_response.json'), 'utf-8');
-           })
-       };
-    }).mockImplementationOnce(() => {
+    UrlFetchApp.fetch = jest.fn(() => {
         return {
             getContentText: jest.fn(() => {
-                return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/not_next_results_response.json'), 'utf-8');
+                return '{}';
             })
         };
     });
@@ -158,6 +152,20 @@ describe('Class: TwitterImpl', () => {
         describe('Data: 2 data', () => {
             test('Assert: response data length = 2', () => {
                 // Arrange
+                // @ts-ignore
+                UrlFetchApp.fetch = jest.fn().mockImplementationOnce(() => {
+                    return {
+                        getContentText: jest.fn(() => {
+                            return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/standard/next_results_response.json'), 'utf-8');
+                        })
+                    };
+                }).mockImplementationOnce(() => {
+                    return {
+                        getContentText: jest.fn(() => {
+                            return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/standard/not_next_results_response.json'), 'utf-8');
+                        })
+                    };
+                });
                 const twitter: ITwitter = new TwitterImpl('', '', []);
                 const expectedResults: number = 2;
 
@@ -167,6 +175,40 @@ describe('Class: TwitterImpl', () => {
 
                 // Assert
                 expect(expectedResults).toBe(actualResults);
+                // @ts-ignore
+                expect(UrlFetchApp.fetch.mock.calls[0][0]).toContain(twitter.SEARCH_STANDARD_URL)
+            });
+        });
+    });
+    describe('Method: premium30DaySearch', () => {
+        describe('Data: 2 data', () => {
+            test('Assert: response data length = 2', () => {
+                // Arrange
+                // @ts-ignore
+                UrlFetchApp.fetch = jest.fn().mockImplementationOnce(() => {
+                    return {
+                        getContentText: jest.fn(() => {
+                            return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/premium/next_results_response.json'), 'utf-8');
+                        })
+                    };
+                }).mockImplementationOnce(() => {
+                    return {
+                        getContentText: jest.fn(() => {
+                            return fs.readFileSync(path.resolve('./__tests__/src/twitter/data/premium/not_next_results_response.json'), 'utf-8');
+                        })
+                    };
+                });
+                const twitter: ITwitter = new TwitterImpl('', '', []);
+                const expectedResults: number = 2;
+
+                // Act
+                const result: Array<IResponseStack> = twitter.premium30DaySearch();
+                const actualResults: number = result.length;
+
+                // Assert
+                expect(expectedResults).toBe(actualResults);
+                // @ts-ignore
+                expect(UrlFetchApp.fetch.mock.calls[0][0]).toBe(twitter.SEARCH_30_URL);
             });
         });
     });
