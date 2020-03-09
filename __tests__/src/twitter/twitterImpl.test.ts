@@ -166,7 +166,7 @@ describe('Class: TwitterImpl', () => {
                         })
                     };
                 });
-                const twitter: ITwitter = new TwitterImpl('', '', []);
+                const twitter: ITwitter = new TwitterImpl('', '', ['slideshare.net']);
                 const expectedResults: number = 2;
 
                 // Act
