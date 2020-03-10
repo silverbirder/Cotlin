@@ -38,13 +38,14 @@ describe('Class: TwitterImpl', () => {
         describe('Data: domains = ["google.com"]', () => {
             test('Assert: twitter.domains = ["google.com"]', () => {
                 // Arrange
-                const domains: Array<string> = ['google.com'];
+                const expectedDomains: Array<string> = ['google.com'];
 
                 // Act
-                const twitter: ITwitter = new TwitterImpl('', '', domains);
+                const twitter: ITwitter = new TwitterImpl('', '', expectedDomains);
+                const actualDomains: Array<string> = twitter.domains;
 
                 // Assert
-                expect(domains).toBe(twitter.domains);
+                expect(expectedDomains).toBe(actualDomains);
             });
         });
     });

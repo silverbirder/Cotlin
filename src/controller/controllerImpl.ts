@@ -1,5 +1,4 @@
 import IController, {IParameter} from "./iController";
-import AppsScriptHttpRequestEvent = GoogleAppsScript.Events.AppsScriptHttpRequestEvent;
 import ITwitter, {IResponseStack, SEARCH_TYPE} from "../twitter/iTwitter";
 import IArchive, {ICompressed} from "../archive/iArchive";
 
@@ -12,8 +11,7 @@ export default class ControllerImpl implements IController {
         this.archive = archive;
     }
 
-    parseParams(e: AppsScriptHttpRequestEvent): IParameter {
-        const parameter: { q?: string, s?: string, u?: string } = e.parameter;
+    parseParams(parameter: { q?: string, s?: string, u?: string }): IParameter {
         let keyword: string = '';
         let since: Date = new Date();
         since.setDate(since.getDate() - 1);
@@ -31,7 +29,7 @@ export default class ControllerImpl implements IController {
         if (parameter.s !== undefined) {
             const sinceAry: Array<string> = parameter.s.split('-');
             if (sinceAry.length === 3) {
-                until = this._parseStrDateToDate(parameter.s);
+                since = this._parseStrDateToDate(parameter.s);
             }
         }
         if (parameter.u !== undefined) {

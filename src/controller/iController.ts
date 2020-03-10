@@ -5,7 +5,7 @@ export default interface IController {
     twitter: ITwitter;
     archive: IArchive;
 
-    parseParams(e: any): IParameter;
+    parseParams(parameter: { q?: string, s?: string, u?: string }): IParameter;
 
     run(): Array<any>;
 }
