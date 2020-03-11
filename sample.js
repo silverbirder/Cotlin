@@ -1,5 +1,4 @@
 function doGet(e) {
-    e = {"parameter": {}};
     const domains = ['www.slideshare.net', 'speakerdeck.com', 'docs.google.com/presentation'];
     const httpsDomains = domains.map((domain) => {
         return 'https://' + domain;
@@ -9,10 +8,10 @@ function doGet(e) {
     if (consumerApiKey === undefined || consumerApiSecretKey === undefined) {
         throw Error('Not set the CONSUMER_API_KEY or CONSUMER_API_SECRET_KEY');
     }
-    const twitter = new Twitter(consumerApiKey, consumerApiSecretKey, domains);
-    const archive = new Archive(new RegExp('^' + httpsDomains.join('|')));
-    const controller = new Controller(twitter, archive);
-    const params = controller.parseParams(e);
+    const twitter = new Cotlin.Twitter(consumerApiKey, consumerApiSecretKey, domains);
+    const archive = new Cotlin.Archive(new RegExp('^' + httpsDomains.join('|')));
+    const controller = new Cotlin.Controller(twitter, archive);
+    const params = controller.parseParams(e.parameter);
     controller.twitter.keyword = params.keyword;
     controller.twitter.since = params.since;
     controller.twitter.until = params.until;
