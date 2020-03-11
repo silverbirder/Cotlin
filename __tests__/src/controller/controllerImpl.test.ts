@@ -1,6 +1,6 @@
 import IController, {IParameter} from "../../../src/controller/iController";
 import ControllerImpl from "../../../src/controller/controllerImpl";
-import ITwitter from "../../../src/twitter/iTwitter";
+import ITwitter, {SEARCH_TYPE} from "../../../src/twitter/iTwitter";
 import TwitterMock from "../../../src/twitter/twitterMock";
 import IArchive from "../../../src/archive/iArchive";
 import ArchiveMock from "../../../src/archive/archiveMock";
@@ -93,17 +93,79 @@ describe('Class: ControllerImpl', () => {
         });
     });
     describe('Method: run', () => {
-        test('Assert: TODO', () => {
-            // Arrange
-            const twitter: ITwitter = new TwitterMock();
-            const archive: IArchive = new ArchiveMock();
-            const controller: IController = new ControllerImpl(twitter, archive);
+        describe('Data: auth = false', () => {
+            test('Assert: response = []', () => {
+                // Arrange
+                const twitter: ITwitter = new TwitterMock();
+                twitter.auth = jest.fn(() => {
+                    return false;
+                });
+                const archive: IArchive = new ArchiveMock();
+                const controller: IController = new ControllerImpl(twitter, archive);
+                const expectedResponse: Array<any> = [];
 
-            // Act
-            const result: Array<any> = controller.run();
+                // Act
+                const actualResponse: Array<any> = controller.run();
 
-            // Assert
-            expect(result).toBeTruthy();
+                // Assert
+                expect(expectedResponse).toStrictEqual(actualResponse);
+            });
+        });
+        describe('Data: auth = true', () => {
+            describe('Data: whichType = standard', () => {
+                test('Assert: call standard search', () => {
+                    // Arrange
+                    const twitter: ITwitter = new TwitterMock();
+                    twitter.whichType = jest.fn(()=> {
+                        return  SEARCH_TYPE.STANDARD;
+                    });
+                    twitter.standardSearch = jest.fn();
+                    const archive: IArchive = new ArchiveMock();
+                    const controller: IController = new ControllerImpl(twitter, archive);
+
+                    // Act
+                    controller.run();
+
+                    // Assert
+                    expect(twitter.standardSearch).toBeCalled();
+                });
+            });
+            describe('Data: whichType = premium 30day', () => {
+                test('Assert: call premium 30day search', () => {
+                    // Arrange
+                    const twitter: ITwitter = new TwitterMock();
+                    twitter.whichType = jest.fn(()=> {
+                        return  SEARCH_TYPE.PREMIUM_30DAY;
+                    });
+                    twitter.premium30DaySearch = jest.fn();
+                    const archive: IArchive = new ArchiveMock();
+                    const controller: IController = new ControllerImpl(twitter, archive);
+
+                    // Act
+                    controller.run();
+
+                    // Assert
+                    expect(twitter.premium30DaySearch).toBeCalled();
+                });
+            });
+            describe('Data: whichType = premium full archive', () => {
+                test('Assert: call premium premium full archive search', () => {
+                    // Arrange
+                    const twitter: ITwitter = new TwitterMock();
+                    twitter.whichType = jest.fn(()=> {
+                        return  SEARCH_TYPE.PREMIUM_FULL_ARCHIVE;
+                    });
+                    twitter.premiumFullArchiveSearch = jest.fn();
+                    const archive: IArchive = new ArchiveMock();
+                    const controller: IController = new ControllerImpl(twitter, archive);
+
+                    // Act
+                    controller.run();
+
+                    // Assert
+                    expect(twitter.premiumFullArchiveSearch).toBeCalled();
+                });
+            });
         });
     })
 });

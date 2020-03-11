@@ -10,18 +10,11 @@ export default class TwitterMock implements ITwitter {
     SEARCH_STANDARD_URL: string = '';
 
     auth(): boolean {
-        return false;
+        return true;
     }
 
     isSetAccessToken(): boolean {
         return false;
-    }
-
-    isWithinStandard(): boolean {
-        return false;
-    }
-
-    premiumSearch(): any {
     }
 
     standardSearch(): any {
