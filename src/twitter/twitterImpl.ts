@@ -17,7 +17,6 @@ export default class TwitterImpl implements ITwitter {
     until: Date = new Date();
     domains: Array<string>;
 
-    LABEL: string = 'dev';
     ACCESS_TOKEN: string = '';
     PROP_ACCESS_TOKEN_NAME: string = 'ACCESS_TOKEN';
 
@@ -25,14 +24,19 @@ export default class TwitterImpl implements ITwitter {
     AUTH_URL: string = `${this.DOMAIN}/oauth2/token`;
     SEARCH_URL: string = `${this.DOMAIN}/1.1/search`;
     TWEET_URL: string = `${this.DOMAIN}/1.1/tweets/search`;
-    SEARCH_30_URL: string = `${this.TWEET_URL}/30day/${this.LABEL}.json`;
-    SEARCH_ARCH_URL: string = `${this.TWEET_URL}/fullarchive/${this.LABEL}.json`;
     SEARCH_STANDARD_URL: string = `${this.SEARCH_URL}/tweets.json`;
+    SEARCH_30_URL: string;
+    SEARCH_ARCH_URL: string;
 
-    constructor(consumerApiKey: string, consumerApiSecretKey: string, domains: Array<string>) {
+    constructor(consumerApiKey: string, consumerApiSecretKey: string, domains: Array<string>, label?: string) {
         this.ACCESS_TOKEN = PropertiesService.getScriptProperties().getProperty(this.PROP_ACCESS_TOKEN_NAME)!;
         this.CONSUMER_API_KEY = consumerApiKey;
         this.CONSUMER_API_SECRET_KEY = consumerApiSecretKey;
+        if (!label) {
+            label = 'dev';
+        }
+        this.SEARCH_30_URL = `${this.TWEET_URL}/30day/${label}.json`;
+        this.SEARCH_ARCH_URL = `${this.TWEET_URL}/fullarchive/${label}.json`;
         this.domains = domains;
     }
 
@@ -56,7 +60,7 @@ export default class TwitterImpl implements ITwitter {
     }
 
     isSetAccessToken(): boolean {
-        return this.ACCESS_TOKEN !== '';
+        return this.ACCESS_TOKEN !== '' || this.ACCESS_TOKEN === undefined;
     }
 
     auth(): boolean {
