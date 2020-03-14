@@ -1,5 +1,5 @@
 {
-  "name": "cotlin",
+  "name": "@silverbirder/cotlin",
   "version": "1.0.0",
   "description": "Cotlin is tools that collect links in tweet by using the Twitter API(Search Tweets)",
   "main": "index.js",
