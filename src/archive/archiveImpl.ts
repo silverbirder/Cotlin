@@ -22,11 +22,13 @@ export default class ArchiveImpl implements IArchive {
 
     compress(responseStacks: Array<IResponseStack>): Array<ICompressed> {
         const dict: any = {};
+        const deleteParamsReg: RegExp = new RegExp(`(#|\\?).+$`);
         responseStacks.forEach((responseStack: IResponseStack) => {
-            if (!(responseStack.url in dict)) {
-                dict[responseStack.url] = [];
+            const normalizedUrl: string = responseStack.url.replace(deleteParamsReg, '');
+            if (!(normalizedUrl in dict)) {
+                dict[normalizedUrl] = [];
             }
-            dict[responseStack.url].push(responseStack.id);
+            dict[normalizedUrl].push(responseStack.id);
         });
         const result: Array<ICompressed> = [];
         Object.keys(dict).forEach(function (key) {

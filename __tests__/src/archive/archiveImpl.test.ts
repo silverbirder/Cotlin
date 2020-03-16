@@ -106,5 +106,29 @@ describe('Class: ArchiveImpl', () => {
                 expect(expectCompressedLength).toBe(actualCompressedLength);
             });
         });
+        describe('Args: hash and query parameter url', () => {
+            test('Assert: compress', () => {
+                const responseStacks: Array<IResponseStack> = [
+                    {
+                        id: '1',
+                        url: 'https://speakerdeck.com/silverbirder/micro-frontends-on-kubernetes-trial?hoge=1',
+                    },
+                    {
+                        id: '2',
+                        url: 'https://speakerdeck.com/silverbirder/micro-frontends-on-kubernetes-trial#var',
+                    }
+                ];
+                // Arrange
+                const rule: RegExp = new RegExp('');
+                const archive: IArchive = new ArchiveImpl(rule);
+                const expectCompressedLength: number = 1;
+
+                // Act
+                const actualCompressedLength = archive.compress(responseStacks).length;
+
+                // Assert
+                expect(expectCompressedLength).toBe(actualCompressedLength);
+            });
+        });
     });
 });
